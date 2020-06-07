@@ -12,11 +12,9 @@ class BooksApp extends Component{
     searchbooks:[]
   }
 
-  componentDidMount() {
-    BooksAPI.getAll().then((booksdata) => 
-    {
-        this.setState({books:booksdata});
-    })
+  async componentDidMount() {
+    const booksdata = await BooksAPI.getAll();
+    this.setState({books:booksdata})
   }
   
   // Empty the SearchBooks state
@@ -25,21 +23,20 @@ class BooksApp extends Component{
   }
 
     // Update Book Shelf from main page
-    updateBookFromMain = (book, shelf) => {
-      BooksAPI.update(book, shelf)
-      .then((res)=>{
+     updateBookFromMain = async (book, shelf) => {
+      await BooksAPI.update(book, shelf)      
         this.setState((prevState) => {
           let newbooks = [...prevState.books]
           newbooks[newbooks.findIndex(b => (b===book))].shelf = shelf
           return {books: newbooks} 
         })
-      })
+      
     } 
 
     // Update Book Shelf from Search
-    updateBookFromSearch = (book, shelf) => {
-      BooksAPI.update(book, shelf)
-      .then((res)=>{
+    updateBookFromSearch = async (book, shelf) => {
+      await BooksAPI.update(book, shelf)
+      
         this.setState((prevState) => {
           let newbooks = [...prevState.books]
           // add or update shelf property to the book
@@ -56,17 +53,17 @@ class BooksApp extends Component{
 
           return {books: newbooks} 
         })
-      })
+      
     } 
 
     // Calling Search API
-    searchBooks = (query) => {
+    searchBooks = async (query) => {
       query = query.trim()
       if(query === undefined || query === null || query===''){ //handling empty query
         this.setState({searchbooks : []})
       }
       else{
-        BooksAPI.search(query)
+        await BooksAPI.search(query)
         .then((searchBooksResult) => {
           if(Array.isArray(searchBooksResult)){ // handling query errors
             // Adding shelf property to the book if it exists in books array
