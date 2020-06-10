@@ -5,6 +5,7 @@ import Search from './Search';
 import {Route} from 'react-router-dom'
 import * as BooksAPI from './BooksAPI';
 
+let timerId;
 
 class BooksApp extends Component{
   state ={
@@ -57,7 +58,8 @@ class BooksApp extends Component{
     } 
 
     // Calling Search API
-    searchBooks = async (query) => {
+
+    _searchBooksExecution = async (query) => {
       query = query.trim()
       if(query === undefined || query === null || query===''){ //handling empty query
         this.setState({searchbooks : []})
@@ -86,6 +88,18 @@ class BooksApp extends Component{
           }               
         })
       }
+
+    }
+
+    // Apply Debouncing
+    searchBooks = (query) => {
+            
+      clearTimeout(this.timerId)      
+
+      timerId = setTimeout(() => {
+        this._searchBooksExecution(query)},250)
+
+
     }
 
 
